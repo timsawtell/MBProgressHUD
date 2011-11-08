@@ -283,6 +283,14 @@
 		
 		taskInProgress = NO;
 		rotationTransform = CGAffineTransformIdentity;
+        
+        // Add cancel button
+        cancelAction = nil;
+        cancelActionTarget = nil;
+        
+        cancelButton = [[UIButton alloc] initWithFrame:self.bounds];
+        [cancelButton setImage:[UIImage imageNamed:@"MBCancel.png"] forState:UIControlStateNormal];
+
     }
     return self;
 }
@@ -417,6 +425,18 @@
 	if (self.height < minSize.height) {
 		self.height = minSize.height;
 	}
+    
+    // Add cancelButton
+    if ((cancelAction != nil) && (cancelActionTarget != nil)) {
+        CGRect bFrame = CGRectMake(floorf((frame.size.width + self.width - 21) / 2),
+                                   floorf((frame.size.height - self.height - 21) / 2),
+                                   21, 21);
+        [cancelButton setFrame:bFrame]; 
+        
+        [cancelButton addTarget:cancelActionTarget action:cancelAction forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:cancelButton];
+    }
+
 }
 
 #pragma mark -
@@ -506,6 +526,11 @@
     [self performSelectorOnMainThread:@selector(cleanUp) withObject:nil waitUntilDone:NO];
 	
     [pool release];
+}
+
+-(void) addCancel:(SEL)method onTarget:(id)target{
+    cancelAction = method;
+    cancelActionTarget = target;
 }
 
 - (void)animationFinished:(NSString *)animationID finished:(BOOL)finished context:(void*)context {

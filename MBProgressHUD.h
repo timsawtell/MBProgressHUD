@@ -117,6 +117,11 @@ typedef enum {
 	UIView *customView;
 	
 	CGAffineTransform rotationTransform;
+    
+    UIButton *cancelButton;
+    id cancelActionTarget;
+    SEL cancelAction;
+
 }
 
 /**
@@ -336,6 +341,14 @@ typedef enum {
  * animations while disappearing.
  */
 - (void)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated;
+
+
+/**
+ * Add possibility to cancal action in progress
+ * @param method selector for button action 
+ * @param target The object that the target method belongs to.
+ */
+- (void) addCancel:(SEL) method onTarget:(id) target;
 
 @end
 
