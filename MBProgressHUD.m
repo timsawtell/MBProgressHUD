@@ -300,6 +300,7 @@
 	
     [indicator release];
     [label release];
+    [cancelButton release];
     [detailsLabel release];
     [labelText release];
     [detailsLabelText release];
