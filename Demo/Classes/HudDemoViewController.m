@@ -200,6 +200,7 @@
 }
 
 - (void) cancelAction: (id) sender{
+	[HUD setLabelText:@"Cancelled!"];
 	cancelled = YES; // set semaphore
 }
 
