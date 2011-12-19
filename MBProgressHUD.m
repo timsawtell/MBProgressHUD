@@ -429,9 +429,9 @@
     
     // Add cancelButton
     if ((cancelAction != nil) && (cancelActionTarget != nil)) {
-        CGRect bFrame = CGRectMake(floorf((frame.size.width + self.width - 21) / 2),
-                                   floorf((frame.size.height - self.height - 21) / 2),
-                                   21, 21);
+        CGRect bFrame = CGRectMake(floorf((frame.size.width + self.width - 45) / 2), 
+                                   floorf((frame.size.height - self.height - 39) / 2),
+                                   42, 42); // touch area doubles button size
         [cancelButton setFrame:bFrame]; 
         
         [cancelButton addTarget:cancelActionTarget action:cancelAction forControlEvents:UIControlEventTouchUpInside];

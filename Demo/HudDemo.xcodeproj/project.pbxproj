@@ -21,8 +21,8 @@
 		D277FDBA11FC877E00304321 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D277FDB811FC877E00304321 /* Icon@2x.png */; };
 		D2A6FD1D13ABC5A200BFE4C9 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2A6FD1C13ABC5A200BFE4C9 /* Default@2x.png */; };
 		D2F88CD6115E9F7F00E6DB82 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = D2F88CD5115E9F7F00E6DB82 /* 37x-Checkmark.png */; };
-		EBB83CB114696F2600459105 /* MBCancel.png in Resources */ = {isa = PBXBuildFile; fileRef = EBB83CAF14696F2600459105 /* MBCancel.png */; };
-		EBB83CB214696F2600459105 /* MBCancel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EBB83CB014696F2600459105 /* MBCancel@2x.png */; };
+		EB511582149F7E80000B3A97 /* MBCancel.png in Resources */ = {isa = PBXBuildFile; fileRef = EB511580149F7E80000B3A97 /* MBCancel.png */; };
+		EB511583149F7E80000B3A97 /* MBCancel@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EB511581149F7E80000B3A97 /* MBCancel@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,8 +46,8 @@
 		D277FDB811FC877E00304321 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		D2A6FD1C13ABC5A200BFE4C9 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		D2F88CD5115E9F7F00E6DB82 /* 37x-Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "37x-Checkmark.png"; path = "Images/37x-Checkmark.png"; sourceTree = "<group>"; };
-		EBB83CAF14696F2600459105 /* MBCancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MBCancel.png; sourceTree = "<group>"; };
-		EBB83CB014696F2600459105 /* MBCancel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MBCancel@2x.png"; sourceTree = "<group>"; };
+		EB511580149F7E80000B3A97 /* MBCancel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MBCancel.png; sourceTree = "<group>"; };
+		EB511581149F7E80000B3A97 /* MBCancel@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MBCancel@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,8 +129,8 @@
 		D277FDBD11FC879500304321 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				EBB83CAF14696F2600459105 /* MBCancel.png */,
-				EBB83CB014696F2600459105 /* MBCancel@2x.png */,
+				EB511580149F7E80000B3A97 /* MBCancel.png */,
+				EB511581149F7E80000B3A97 /* MBCancel@2x.png */,
 				D277FDB711FC877E00304321 /* Icon.png */,
 				D277FDB811FC877E00304321 /* Icon@2x.png */,
 				D277FDB211FC834200304321 /* Default.png */,
@@ -205,8 +205,8 @@
 				D277FDB911FC877E00304321 /* Icon.png in Resources */,
 				D277FDBA11FC877E00304321 /* Icon@2x.png in Resources */,
 				D2A6FD1D13ABC5A200BFE4C9 /* Default@2x.png in Resources */,
-				EBB83CB114696F2600459105 /* MBCancel.png in Resources */,
-				EBB83CB214696F2600459105 /* MBCancel@2x.png in Resources */,
+				EB511582149F7E80000B3A97 /* MBCancel.png in Resources */,
+				EB511583149F7E80000B3A97 /* MBCancel@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
