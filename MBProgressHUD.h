@@ -98,7 +98,61 @@ typedef void (^MBProgressHUDCompletionBlock)();
  *   indicator view.
  * - If also the detailsLabelText property is set then another label is placed below the first label.
  */
-@interface MBProgressHUD : UIView
+@interface MBProgressHUD : UIView {
+	
+	MBProgressHUDMode mode;
+    MBProgressHUDAnimation animationType;
+	
+	SEL methodForExecution;
+	id targetForExecution;
+	id objectForExecution;
+	BOOL useAnimation;
+	
+    float yOffset;
+    float xOffset;
+	
+	float width;
+	float height;
+	
+	CGSize minSize;
+	BOOL square;
+	
+	float margin;
+	
+	BOOL dimBackground;
+	
+	BOOL taskInProgress;
+	float graceTime;
+	float minShowTime;
+	NSTimer *graceTimer;
+	NSTimer *minShowTimer;
+	NSDate *showStarted;
+	
+	UIView *indicator;
+	UILabel *label;
+	UILabel *detailsLabel;
+	
+	float progress;
+	
+	id<MBProgressHUDDelegate> delegate;
+	NSString *labelText;
+	NSString *detailsLabelText;
+	float opacity;
+	UIFont *labelFont;
+	UIFont *detailsLabelFont;
+	
+    BOOL isFinished;
+	BOOL removeFromSuperViewOnHide;
+	
+	UIView *customView;
+	
+	CGAffineTransform rotationTransform;
+    
+    UIButton *cancelButton;
+    id cancelActionTarget;
+    SEL cancelAction;
+
+}
 
 /**
  * Creates a new HUD, adds it to provided view and shows it. The counterpart to this method is hideHUDForView:animated:.
@@ -396,6 +450,62 @@ typedef void (^MBProgressHUDCompletionBlock)();
  * Force the HUD dimensions to be equal if possible. 
  */
 @property (assign, getter = isSquare) BOOL square;
+
+/** 
+ * Display the HUD. You need to make sure that the main thread completes its run loop soon after this method call so
+ * the user interface can be updated. Call this method when your task is already set-up to be executed in a new thread
+ * (e.g., when using something like NSOperation or calling an asynchronous call like NSUrlRequest).
+ *
+ * If you need to perform a blocking thask on the main thread, you can try spining the run loop imeidiately after calling this 
+ * method by using:
+ *
+ * [[NSRunLoop currentRunLoop] runUntilDate:[NSDate distantPast]];
+ *
+ * @param animated If set to YES the HUD will disappear using the current animationType. If set to NO the HUD will not use
+ * animations while disappearing.
+ */
+- (void)show:(BOOL)animated;
+
+/** 
+ * Hide the HUD. This still calls the hudWasHidden delegate. This is the counterpart of the hide: method. Use it to
+ * hide the HUD when your task completes.
+ *
+ * @param animated If set to YES the HUD will disappear using the current animationType. If set to NO the HUD will not use
+ * animations while disappearing.
+ */
+- (void)hide:(BOOL)animated;
+
+/** 
+ * Hide the HUD after a delay. This still calls the hudWasHidden delegate. This is the counterpart of the hide: method. Use it to
+ * hide the HUD when your task completes.
+ *
+ * @param animated If set to YES the HUD will disappear using the current animationType. If set to NO the HUD will not use
+ * animations while disappearing.
+ * @param delay Delay in secons until the HUD is hidden.
+ */
+- (void)hide:(BOOL)animated afterDelay:(NSTimeInterval)delay;
+
+/** 
+ * Shows the HUD while a background task is executing in a new thread, then hides the HUD.
+ *
+ * This method also takes care of NSAutoreleasePools so your method does not have to be concerned with setting up a
+ * pool.
+ *
+ * @param method The method to be executed while the HUD is shown. This method will be executed in a new thread.
+ * @param target The object that the target method belongs to.
+ * @param object An optional object to be passed to the method.
+ * @param animated If set to YES the HUD will disappear using the current animationType. If set to NO the HUD will not use
+ * animations while disappearing.
+ */
+- (void)showWhileExecuting:(SEL)method onTarget:(id)target withObject:(id)object animated:(BOOL)animated;
+
+
+/**
+ * Add possibility to cancal action in progress
+ * @param method selector for button action 
+ * @param target The object that the target method belongs to.
+ */
+- (void) addCancel:(SEL) method onTarget:(id) target;
 
 @end
 

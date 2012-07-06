@@ -14,6 +14,8 @@
 
 	long long expectedLength;
 	long long currentLength;
+    
+    BOOL cancelled;
 }
 
 - (IBAction)showSimple:(id)sender;

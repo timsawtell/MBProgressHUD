@@ -100,7 +100,8 @@
 	HUD.labelText = @"Loading";
 	
 	// myProgressTask uses the HUD instance to update progress
-	[HUD showWhileExecuting:@selector(myProgressTask) onTarget:self withObject:nil animated:YES];
+    [HUD showWhileExecuting:@selector(myProgressTask) onTarget:self withObject:nil animated:YES];
+	[HUD addCancel:@selector(cancelAction:) onTarget:self];
 }
 
 - (IBAction)showWithCustomView:(id)sender {
@@ -220,13 +221,19 @@
 }
 
 - (void)myProgressTask {
-	// This just increases the progress indicator in a loop
-	float progress = 0.0f;
-	while (progress < 1.0f) {
-		progress += 0.01f;
-		HUD.progress = progress;
-		usleep(50000);
-	}
+    // This just increases the progress indicator in a loop
+    float progress = 0.0f;
+	cancelled = NO; // cancel semaphore
+    while (progress < 1.0f && !cancelled) {
+        progress += 0.01f;
+        HUD.progress = progress;
+        usleep(50000);
+    }
+}
+
+- (void) cancelAction: (id) sender{
+	[HUD setLabelText:@"Cancelled!"];
+	cancelled = YES; // set semaphore
 }
 
 - (void)myMixedTask {
