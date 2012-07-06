@@ -54,14 +54,6 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 
 
 @implementation MBProgressHUD {
-	BOOL useAnimation;
-	SEL methodForExecution;
-	id targetForExecution;
-	id objectForExecution;
-	UILabel *label;
-	UILabel *detailsLabel;
-	BOOL isFinished;
-	CGAffineTransform rotationTransform;
 }
 
 #pragma mark - Properties
@@ -186,162 +178,28 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
         // Add cancel button
         cancelAction = nil;
         cancelActionTarget = nil;
-        
-        cancelButton = [[UIButton alloc] initWithFrame:self.bounds];
-        [cancelButton setImage:[UIImage imageNamed:@"MBCancel.png"] forState:UIControlStateNormal];
-
     }
     return self;
 }
 
-- (void)dealloc {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	
-    [indicator release];
-    [label release];
-    [cancelButton release];
-    [detailsLabel release];
-    [labelText release];
-    [detailsLabelText release];
-	[graceTimer release];
-	[minShowTimer release];
-	[showStarted release];
-	[customView release];
-    [super dealloc];
+- (id)initWithView:(UIView *)view {
+	NSAssert(view, @"View must not be nil.");
+	id me = [self initWithFrame:view.bounds];
+	// We need to take care of rotation ourselfs if we're adding the HUD to a window
+	if ([view isKindOfClass:[UIWindow class]]) {
+		[self setTransformForCurrentOrientation:NO];
+	}
+	return me;
 }
 
-#pragma mark -
-#pragma mark Layout
-
-- (void)layoutSubviews {
-    CGRect frame = self.bounds;
-	
-    // Compute HUD dimensions based on indicator size (add margin to HUD border)
-    CGRect indFrame = indicator.bounds;
-    self.width = indFrame.size.width + 2 * margin;
-    self.height = indFrame.size.height + 2 * margin;
-	
-    // Position the indicator
-    indFrame.origin.x = floorf((frame.size.width - indFrame.size.width) / 2) + self.xOffset;
-    indFrame.origin.y = floorf((frame.size.height - indFrame.size.height) / 2) + self.yOffset;
-    indicator.frame = indFrame;
-	
-    // Add label if label text was set
-    if (nil != self.labelText) {
-        // Get size of label text
-        CGSize dims = [self.labelText sizeWithFont:self.labelFont];
-		
-        // Compute label dimensions based on font metrics if size is larger than max then clip the label width
-        float lHeight = dims.height;
-        float lWidth;
-        if (dims.width <= (frame.size.width - 4 * margin)) {
-            lWidth = dims.width;
-        }
-        else {
-            lWidth = frame.size.width - 4 * margin;
-        }
-		
-        // Set label properties
-        label.font = self.labelFont;
-        label.adjustsFontSizeToFitWidth = NO;
-        label.textAlignment = UITextAlignmentCenter;
-        label.opaque = NO;
-        label.backgroundColor = [UIColor clearColor];
-        label.textColor = [UIColor whiteColor];
-        label.text = self.labelText;
-		
-        // Update HUD size
-        if (self.width < (lWidth + 2 * margin)) {
-            self.width = lWidth + 2 * margin;
-        }
-        self.height = self.height + lHeight + PADDING;
-		
-        // Move indicator to make room for the label
-        indFrame.origin.y -= (floorf(lHeight / 2 + PADDING / 2));
-        indicator.frame = indFrame;
-		
-        // Set the label position and dimensions
-        CGRect lFrame = CGRectMake(floorf((frame.size.width - lWidth) / 2) + xOffset,
-                                   floorf(indFrame.origin.y + indFrame.size.height + PADDING),
-                                   lWidth, lHeight);
-        label.frame = lFrame;
-		
-        [self addSubview:label];
-		
-        // Add details label delatils text was set
-        if (nil != self.detailsLabelText) {
-			
-            // Set label properties
-            detailsLabel.font = self.detailsLabelFont;
-            detailsLabel.adjustsFontSizeToFitWidth = NO;
-            detailsLabel.textAlignment = UITextAlignmentCenter;
-            detailsLabel.opaque = NO;
-            detailsLabel.backgroundColor = [UIColor clearColor];
-            detailsLabel.textColor = [UIColor whiteColor];
-            detailsLabel.text = self.detailsLabelText;
-            detailsLabel.numberOfLines = 0;
-
-			CGFloat maxHeight = frame.size.height - self.height - 2*margin;
-			CGSize labelSize = [detailsLabel.text sizeWithFont:detailsLabel.font constrainedToSize:CGSizeMake(frame.size.width - 4*margin, maxHeight) lineBreakMode:detailsLabel.lineBreakMode];
-            lHeight = labelSize.height;
-            lWidth = labelSize.width;
-			
-            // Update HUD size
-            if (self.width < lWidth) {
-                self.width = lWidth + 2 * margin;
-            }
-            self.height = self.height + lHeight + PADDING;
-			
-            // Move indicator to make room for the new label
-            indFrame.origin.y -= (floorf(lHeight / 2 + PADDING / 2));
-            indicator.frame = indFrame;
-			
-            // Move first label to make room for the new label
-            lFrame.origin.y -= (floorf(lHeight / 2 + PADDING / 2));
-            label.frame = lFrame;
-			
-            // Set label position and dimensions
-            CGRect lFrameD = CGRectMake(floorf((frame.size.width - lWidth) / 2) + xOffset,
-                                        lFrame.origin.y + lFrame.size.height + PADDING, lWidth, lHeight);
-            detailsLabel.frame = lFrameD;
-			
-            [self addSubview:detailsLabel];
-        }
-    }
-	
-	if (square) {
-		CGFloat max = MAX(self.width, self.height);
-		if (max <= frame.size.width - 2*margin) {
-			self.width = max;
-		}
-		if (max <= frame.size.height - 2*margin) {
-			self.height = max;
-		}
-	}
-	
-	if (self.width < minSize.width) {
-		self.width = minSize.width;
-	} 
-	if (self.height < minSize.height) {
-		self.height = minSize.height;
-	}
-    
-    // Add cancelButton
-    if ((cancelAction != nil) && (cancelActionTarget != nil)) {
-        CGRect bFrame = CGRectMake(floorf((frame.size.width + self.width - 45) / 2), 
-                                   floorf((frame.size.height - self.height - 39) / 2),
-                                   42, 42); // touch area doubles button size
-        [cancelButton setFrame:bFrame]; 
-        
-        [cancelButton addTarget:cancelActionTarget action:cancelAction forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:cancelButton];
-    }
-
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Show & hide
 
 - (void)show:(BOOL)animated {
+    [self setupLabels];
 	useAnimation = animated;
 	// If the grace time is set postpone the HUD display
 	if (self.graceTime > 0.0) {
@@ -441,6 +299,12 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 -(void) addCancel:(SEL)method onTarget:(id)target{
     cancelAction = method;
     cancelActionTarget = target;
+    
+    UIImage *img = [UIImage imageNamed:@"MBCancel.png"];
+    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, img.size.width, img.size.height)];
+    [cancelButton setImage:img forState:UIControlStateNormal];
+    [cancelButton addTarget:cancelActionTarget action:cancelAction forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:cancelButton];
 }
 
 - (void)animationFinished:(NSString *)animationID finished:(BOOL)finished context:(void*)context {
@@ -636,6 +500,13 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	// Position elements
 	CGFloat yPos = roundf(((bounds.size.height - totalSize.height) / 2)) + margin + yOffset;
 	CGFloat xPos = xOffset;
+    
+    CGRect cancelButtonF;
+    cancelButtonF.size = cancelButton.imageView.frame.size;
+	cancelButtonF.origin.y = yPos - margin - yOffset - (cancelButtonF.size.height / 2);
+	cancelButtonF.origin.x = roundf((bounds.size.width) / 2 - (totalSize.width /2) - (cancelButtonF.size.width * 0.3f));
+    cancelButton.frame = cancelButtonF;
+    
 	indicatorF.origin.y = yPos;
 	indicatorF.origin.x = roundf((bounds.size.width - indicatorF.size.width) / 2) + xPos;
 	indicator.frame = indicatorF;
@@ -659,7 +530,7 @@ static const CGFloat kDetailsLabelFontSize = 12.f;
 	detailsLabelF.origin.x = roundf((bounds.size.width - detailsLabelSize.width) / 2) + xPos;
 	detailsLabelF.size = detailsLabelSize;
 	detailsLabel.frame = detailsLabelF;
-	
+    	
 	// Enforce minsize and quare rules
 	if (square) {
 		CGFloat max = MAX(totalSize.width, totalSize.height);

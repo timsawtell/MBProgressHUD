@@ -134,7 +134,7 @@ typedef void (^MBProgressHUDCompletionBlock)();
 	
 	float progress;
 	
-	id<MBProgressHUDDelegate> delegate;
+	__weak id<MBProgressHUDDelegate> delegate;
 	NSString *labelText;
 	NSString *detailsLabelText;
 	float opacity;
@@ -209,14 +209,6 @@ typedef void (^MBProgressHUDCompletionBlock)();
  */
 + (NSArray *)allHUDsForView:(UIView *)view;
 
-/**
- * A convenience constructor that initializes the HUD with the window's bounds. Calls the designated constructor with
- * window.bounds as the parameter.
- *
- * @param window The window instance that will provide the bounds for the HUD. Should be the same instance as
- * the HUD's superview (i.e., the window that the HUD will be added to).
- */
-- (id)initWithWindow:(UIWindow *)window;
 
 /**
  * A convenience constructor that initializes the HUD with the view's bounds. Calls the designated constructor with
@@ -506,7 +498,7 @@ typedef void (^MBProgressHUDCompletionBlock)();
  * @param target The object that the target method belongs to.
  */
 - (void) addCancel:(SEL) method onTarget:(id) target;
-
+- (void)updateIndicators;
 @end
 
 
